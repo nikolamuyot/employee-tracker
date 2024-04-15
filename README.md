@@ -19,7 +19,3 @@ To get started with the Employee Tracker, follow these steps:
 1. Clone the repository to your local machine.
 2. Navigate to the project directory.
 3. Install the necessary dependencies by running the following command:
-
-```bash
-
-```

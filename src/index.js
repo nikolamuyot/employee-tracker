@@ -1,6 +1,14 @@
 require("dotenv").config();
 const inquirer = require("inquirer");
-const db = require("./lib/database");
+// const { query } = require("./lib/database");
+const { Pool } = require("pg");
+const pool = new Pool({
+  user: "postgres",
+  host: "localhost",
+  database: "employee_tracker_db",
+  password: "korra",
+});
+pool.connect();
 
 function mainMenu() {
   inquirer
@@ -29,7 +37,8 @@ function mainMenu() {
 }
 
 function viewDepartments() {
-  db.query("SELECT * FROM departments", [])
+  pool
+    .query("SELECT * FROM departments", [])
     .then((res) => {
       console.table(res.rows);
       mainMenu();
