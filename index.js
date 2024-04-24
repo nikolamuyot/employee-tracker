@@ -70,10 +70,22 @@ function addDepartment() {
     ])
     .then((answer) => {
       pool
-        .query("INSERT INTO departments (name) VALUES ($1)", [answer.name])
-        .then(() => {
-          console.log("Department added!");
-          mainMenu();
+        .query("SELECT * FROM departments WHERE name = $1", [answer.name])
+        .then((res) => {
+          if (res.rows.length > 0) {
+            console.log("A department with this name already exists.");
+            mainMenu();
+          } else {
+            pool
+              .query("INSERT INTO departments (name) VALUES ($1)", [
+                answer.name,
+              ])
+              .then(() => {
+                console.log("Department added!");
+                mainMenu();
+              })
+              .catch((err) => console.error(err));
+          }
         })
         .catch((err) => console.error(err));
     });
