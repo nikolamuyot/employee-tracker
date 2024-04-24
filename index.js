@@ -89,7 +89,12 @@ function viewEmployees() {
     .catch((err) => console.error(err));
 }
 
-function addEmployee() {
+async function addEmployee() {
+  const allRoleData = await pool.query("SELECT * FROM roles");
+  const roleChoices = allRoleData.rows.map((role) => ({
+    name: role.title,
+    value: role.id,
+  }));
   inquirer
     .prompt([
       {
@@ -103,21 +108,17 @@ function addEmployee() {
         message: "Last name:",
       },
       {
-        type: "input",
+        type: "list",
         name: "role",
         message: "Role:",
-      },
-      {
-        type: "input",
-        name: "department",
-        message: "Department:",
+        choices: roleChoices,
       },
     ])
     .then((answer) => {
       pool
         .query(
-          "INSERT INTO employees (first_name, last_name, role, department) VALUES ($1, $2, $3, $4)",
-          [answer.firstName, answer.lastName, answer.role, answer.department]
+          "INSERT INTO employees (first_name, last_name, role_id) VALUES ($1, $2, $3)",
+          [answer.firstName, answer.lastName, answer.role]
         )
         .then(() => {
           console.log("Employee added!");
